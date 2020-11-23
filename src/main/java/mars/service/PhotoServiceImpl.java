@@ -2,9 +2,9 @@ package mars.service;
 
 import mars.core.MarsApplicationException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
@@ -17,12 +17,10 @@ public class PhotoServiceImpl implements PhotoService {
 
     private final RoverService roverService;
     private final MarsApiService marsApiService;
-    private final TaskExecutor taskExecutor;
 
-    public PhotoServiceImpl(RoverService roverService, MarsApiService marsApiService, TaskExecutor taskExecutor) {
+    public PhotoServiceImpl(RoverService roverService, MarsApiService marsApiService) {
         this.roverService = roverService;
         this.marsApiService = marsApiService;
-        this.taskExecutor = taskExecutor;
     }
 
     public List<Photo> cachePhotos(String earthDate) throws MarsApplicationException {
@@ -40,22 +38,22 @@ public class PhotoServiceImpl implements PhotoService {
             return result;
         }
         if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Processing photos for earthDate [" + earthDate + "].");
+            LOGGER.debug("Downloading photos for earthDate [" + earthDate + "].");
         }
         List<String> roverNames = roverService.requestRoverNames();
         List<Photo> photos = marsApiService.requestPhotos(roverNames, earthDate);
-        for (Photo photo : photos) {
-            // Download photos asynchronously.
-            taskExecutor.execute(
-                    new PhotoDownloadTask(
-                            marsApiService,
-                            photo.getEarthDate(),
-                            photo.getImgSrc()
-                    )
+        photos.parallelStream().forEach(photo -> {
+            File photoFile = new File(
+                    "photo_cache" +
+                            "/" + earthDate +
+                            "/" + StringUtils.substringAfterLast(photo.getImgSrc(), "/")
             );
-        }
+            //noinspection ResultOfMethodCallIgnored
+            photoFile.getParentFile().mkdirs();
+            marsApiService.downloadPhoto(photo.getImgSrc(), photoFile);
+        });
         if(LOGGER.isDebugEnabled()) {
-            LOGGER.debug("Done submitting photo processing tasks for earthDate [" + earthDate + "].");
+            LOGGER.debug("Done downloading " + photos.size() + " photos for earthDate [" + earthDate + "].");
         }
         return photos;
     }

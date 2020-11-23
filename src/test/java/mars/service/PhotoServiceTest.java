@@ -24,11 +24,9 @@ public class PhotoServiceTest {
     private PhotoService photoService;
 
     @Test
-    public void testProcessPhotos() throws MarsApplicationException, InterruptedException {
+    public void testProcessPhotos() throws MarsApplicationException {
         FileUtils.deleteQuietly(new File(PHOTO_CACHE));
         photoService.cachePhotos(DATE1);
-
-        Thread.sleep(60000);
 
         File dateDirectory = new File(PHOTO_CACHE + "/" + DATE1);
         Assert.assertTrue(dateDirectory.exists());

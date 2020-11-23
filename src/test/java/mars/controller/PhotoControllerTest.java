@@ -39,7 +39,7 @@ public class PhotoControllerTest {
     private ObjectMapper objectMapper;
 
     @Test
-    public void testCache() throws IOException, InterruptedException {
+    public void testCache() throws IOException {
         photoService.clearCache();
 
         try(CloseableHttpClient client = HttpClients.createDefault()) {
@@ -52,8 +52,6 @@ public class PhotoControllerTest {
             );
             Assert.assertEquals(442, photos.size());
         }
-
-        Thread.sleep(60000);
 
         File dateDirectory = new File(PHOTO_CACHE + "/" + DATE1);
         Assert.assertTrue(dateDirectory.exists());
