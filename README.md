@@ -27,3 +27,8 @@ Allowed date formats are:
 * MMM d, yyyy
 * MMM-d-yyyy
 * yyyy-MM-dd.
+
+Note: PhotoControllerTest appears to have regressed,
+most likely as a result of dependency changes. It appears
+that Tomcat is no longer starting at the beginning
+of the test. This requires further investigation.

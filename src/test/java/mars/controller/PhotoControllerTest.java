@@ -12,8 +12,6 @@ import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.core.task.TaskExecutor;
-import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
 import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
@@ -32,9 +30,6 @@ public class PhotoControllerTest {
 
     @Autowired
     private PhotoService photoService;
-
-    @Autowired
-    private TaskExecutor taskExecutor;
 
     @Test
     public void testCache() throws IOException, InterruptedException {
