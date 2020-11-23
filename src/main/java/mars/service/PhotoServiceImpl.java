@@ -33,13 +33,19 @@ public class PhotoServiceImpl implements PhotoService {
         this.objectMapper = objectMapper;
     }
 
-    public void cachePhotos(String earthDate) throws MarsApplicationException {
+    public List<Photo> cachePhotos(String earthDate) throws MarsApplicationException {
         File dateDirectory = new File(
                 "photo_cache" + "/" + earthDate
         );
         if(dateDirectory.exists()) {
             LOG.debug("Date [" + earthDate + "] is already cached.");
-            return;
+            String[] fileNames = dateDirectory.list();
+            //noinspection ConstantConditions
+            List<Photo> result = new ArrayList<>(fileNames.length);
+            for(String fileName : fileNames) {
+                result.add(new Photo(earthDate, fileName));
+            }
+            return result;
         }
         if(LOG.isDebugEnabled()) {
             LOG.debug("Processing photos for earthDate [" + earthDate + "].");
@@ -59,6 +65,7 @@ public class PhotoServiceImpl implements PhotoService {
             if(LOG.isDebugEnabled()) {
                 LOG.debug("Done submitting photo processing tasks for earthDate [" + earthDate + "].");
             }
+            return photos;
         } catch(Exception e) {
             throw new MarsApplicationException("Failed to process photos for date [" + earthDate + "].", e);
         }

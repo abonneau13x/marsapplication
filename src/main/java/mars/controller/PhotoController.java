@@ -2,12 +2,27 @@ package mars.controller;
 
 import mars.core.MarsApplicationException;
 import mars.core.Util;
+import mars.service.Photo;
 import mars.service.PhotoService;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.client.methods.HttpHead;
+import org.springframework.core.io.FileSystemResource;
+import org.springframework.core.io.Resource;
+import org.springframework.core.io.UrlResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.Collections;
+import java.util.List;
 
 @RestController
 @RequestMapping("api/v1")
@@ -21,18 +36,33 @@ public class PhotoController {
     }
 
     @RequestMapping("/cache")
-    public boolean cache(@RequestParam("date") String rawDate) {
+    public List<Photo> cache(@RequestParam("date") String rawDate) throws MarsApplicationException {
         String earthDate = Util.parseEarthDate(rawDate);
         if(earthDate == null) {
-            return false;
+            return Collections.emptyList();
         }
-        try {
-            photoService.cachePhotos(earthDate);
-        } catch (MarsApplicationException e) {
-            LOG.error("Failed to cache photos for date [" + rawDate + "].", e);
-            return false;
+        return photoService.cachePhotos(earthDate);
+    }
+
+    @RequestMapping("/download")
+    public ResponseEntity<Resource> download(@RequestParam("date") String rawDate, @RequestParam("fileName") String fileName) throws IOException, MarsApplicationException {
+        String earthDate = Util.parseEarthDate(rawDate);
+        if(earthDate == null) {
+            throw new MarsApplicationException("[" + rawDate + "] is not a valid date.");
         }
-        return true;
+        File photoFile = new File(
+                "photo_cache" +
+                        "/" + earthDate +
+                        "/" + fileName
+        );
+        if(!photoFile.exists()) {
+            throw new MarsApplicationException("File [" + fileName + "] does not exist in cache for date [" + rawDate + "].");
+        }
+        Resource resource = new UrlResource(photoFile.toURI());
+        return ResponseEntity.ok()
+                .contentType(MediaType.IMAGE_JPEG)
+                .header(HttpHeaders.CONTENT_DISPOSITION, "attachment; filename=\"" + fileName + "\"")
+                .body(resource);
     }
 
     @RequestMapping("/removeFromCache")

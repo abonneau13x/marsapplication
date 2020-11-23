@@ -6,17 +6,23 @@ File paths containing dates can be submitted as arguments when running
 from the command line. Photos for the dates indicated by the command line
 arguments will be cached immediately.
 
-The application also provides a simple API with three endpoints.
+The application also provides a simple API with four endpoints.
 Examples:
 * http://localhost:8080/api/v1/cache?date=2016-07-13
+* http://localhost:8080/api/v1/download?date=2016-07-13&fileName=1F521638128EFFCR03P1214L0M1-BR.JPG
 * http://localhost:8080/api/v1/removeFromCache?date=2016-07-13
 * http://localhost:8080/api/v1/clearCache
 
-The cache and removeFromCache methods accept a "date" parameter.
+The cache method accepts a "date" parameter and returns a list of
+photos cached for that date.
+
+The download method accepts a "date" parameter and a "fileName"
+parameter and returns the image file.
+ 
+The removeFromCache method accepts a "date" parameter and returns
+a boolean indicating success or failure.
+
 The clearCache method does not accept any parameters.
-All methods return true if the operation succeeded and false if it did not.
-Note that image caching is asynchronous, so the cache method will return
-true if the download tasks have been submitted successfully.
 
 The number of threads used to download images can be configured
 via the spring.task.execution.pool.max-size property in
