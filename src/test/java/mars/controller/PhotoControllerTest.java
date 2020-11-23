@@ -9,10 +9,13 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.junit.Assert;
 import org.junit.Test;
+import org.junit.runner.RunWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.scheduling.concurrent.ThreadPoolTaskExecutor;
+import org.springframework.test.context.ContextConfiguration;
+import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
 import java.io.IOException;
@@ -20,6 +23,8 @@ import java.nio.charset.Charset;
 import java.util.Objects;
 
 @SpringBootTest(classes = MarsApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
+@RunWith(SpringJUnit4ClassRunner.class)
+@ContextConfiguration(classes = MarsApplication.class)
 public class PhotoControllerTest {
     private static final String PHOTO_CACHE = "photo_cache";
     private static final String DATE1 = "2016-07-13";

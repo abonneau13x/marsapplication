@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/")
+@RequestMapping("api/v1")
 public class PhotoController {
 
     private static final Log LOG = LogFactory.getLog(PhotoController.class);
@@ -20,7 +20,7 @@ public class PhotoController {
         this.photoService = photoService;
     }
 
-    @RequestMapping("cache")
+    @RequestMapping("/cache")
     public boolean cache(@RequestParam("date") String rawDate) {
         String earthDate = Util.parseEarthDate(rawDate);
         if(earthDate == null) {
@@ -35,7 +35,7 @@ public class PhotoController {
         return true;
     }
 
-    @RequestMapping("removeFromCache")
+    @RequestMapping("/removeFromCache")
     public boolean removeFromCache(@RequestParam("date") String rawDate) {
         String earthDate = Util.parseEarthDate(rawDate);
         if(earthDate == null) {
@@ -44,7 +44,7 @@ public class PhotoController {
         return photoService.removeFromCache(earthDate);
     }
 
-    @RequestMapping("clearCache")
+    @RequestMapping("/clearCache")
     public boolean clearCache() {
         return photoService.clearCache();
     }
