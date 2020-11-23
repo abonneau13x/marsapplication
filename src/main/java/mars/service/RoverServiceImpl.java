@@ -12,6 +12,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.springframework.stereotype.Service;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -45,7 +46,7 @@ public class RoverServiceImpl implements RoverService {
                 LOG.debug("Done requesting rover names.");
             }
             return result;
-        } catch (Exception e) {
+        } catch (IOException e) {
             throw new MarsApplicationException("Failed to request rover names.", e);
         }
     }

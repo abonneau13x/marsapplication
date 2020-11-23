@@ -10,6 +10,7 @@ import org.apache.http.impl.client.HttpClients;
 
 import java.io.File;
 import java.io.FileOutputStream;
+import java.io.IOException;
 
 public class PhotoDownloadTask implements Runnable {
     private static final Log LOG = LogFactory.getLog(PhotoDownloadTask.class);
@@ -46,7 +47,7 @@ public class PhotoDownloadTask implements Runnable {
                         client.execute(request).getEntity().getContent(),
                         outputStream
                 );
-            } catch (Exception e) {
+            } catch (IOException e) {
                 LOG.error("Failed to download photo for date [" + earthDate + "], imgSrc [" + imgSrc + "].", e);
             }
             if(LOG.isDebugEnabled()) {

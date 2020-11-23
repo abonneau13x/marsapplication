@@ -16,6 +16,7 @@ import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -108,7 +109,7 @@ public class PhotoServiceImpl implements PhotoService {
                     page++;
                 } while(photos.size() >= 25);
 
-            } catch (Exception e) {
+            } catch (IOException e) {
                 throw new MarsApplicationException("Failed to request photos for rover [" + roverName + "], date [" + earthDate + "].", e);
             }
         }
