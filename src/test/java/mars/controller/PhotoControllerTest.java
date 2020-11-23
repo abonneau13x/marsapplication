@@ -1,6 +1,9 @@
 package mars.controller;
 
+import com.fasterxml.jackson.core.type.TypeReference;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import mars.MarsApplication;
+import mars.service.Photo;
 import mars.service.PhotoService;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
@@ -18,6 +21,7 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.util.List;
 import java.util.Objects;
 
 @SpringBootTest(classes = MarsApplication.class, webEnvironment = SpringBootTest.WebEnvironment.DEFINED_PORT)
@@ -31,14 +35,22 @@ public class PhotoControllerTest {
     @Autowired
     private PhotoService photoService;
 
+    @Autowired
+    private ObjectMapper objectMapper;
+
     @Test
     public void testCache() throws IOException, InterruptedException {
         photoService.clearCache();
 
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/cache?date=" + DATE1);
-            HttpResponse rawResponse = client.execute(request);
-            Assert.assertEquals("true", IOUtils.toString(rawResponse.getEntity().getContent(), Charset.defaultCharset()));
+            HttpResponse response = client.execute(request);
+            //noinspection Convert2Diamond
+            List<Photo> photos = objectMapper.readValue(
+                    response.getEntity().getContent(),
+                    new TypeReference<List<Photo>>() {}
+            );
+            Assert.assertEquals(442, photos.size());
         }
 
         Thread.sleep(60000);

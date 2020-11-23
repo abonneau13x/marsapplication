@@ -1,8 +1,15 @@
 package mars.service;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 public class Photo {
-    private final String earthDate;
-    private final String imgSrc;
+    @JsonProperty("earth_date")
+    private String earthDate;
+    @JsonProperty("img_src")
+    private String imgSrc;
+
+    public Photo() {
+    }
 
     public Photo(String earthDate, String imgSrc) {
         this.earthDate = earthDate;
