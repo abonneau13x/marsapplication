@@ -6,6 +6,7 @@ import com.fasterxml.jackson.databind.node.ObjectNode;
 import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import org.apache.commons.io.FileUtils;
+import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -33,7 +34,14 @@ public class PhotoServiceImpl implements PhotoService {
         this.objectMapper = objectMapper;
     }
 
-    public void processPhotos(String earthDate) throws MarsApplicationException {
+    public void cachePhotos(String earthDate) throws MarsApplicationException {
+        File dateDirectory = new File(
+                "photo_cache" + "/" + earthDate
+        );
+        if(dateDirectory.exists()) {
+            LOG.debug("Date [" + earthDate + "] is already cached.");
+            return;
+        }
         if(LOG.isDebugEnabled()) {
             LOG.debug("Processing photos for earthDate [" + earthDate + "].");
         }

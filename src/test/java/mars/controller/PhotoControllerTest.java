@@ -46,7 +46,7 @@ public class PhotoControllerTest {
             Assert.assertEquals("true", IOUtils.toString(rawResponse.getEntity().getContent(), Charset.defaultCharset()));
         }
 
-        waitForTasks();
+        Thread.sleep(60000);
 
         File dateDirectory = new File(PHOTO_CACHE + "/" + DATE1);
         Assert.assertTrue(dateDirectory.exists());
@@ -121,13 +121,5 @@ public class PhotoControllerTest {
             Assert.assertEquals("true", IOUtils.toString(rawResponse.getEntity().getContent(), Charset.defaultCharset()));
         }
         Assert.assertFalse(cacheDirectory.exists());
-    }
-
-    private void waitForTasks() throws InterruptedException {
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) taskExecutor;
-        while(threadPoolTaskExecutor.getThreadPoolExecutor().getCompletedTaskCount() < threadPoolTaskExecutor.getThreadPoolExecutor().getTaskCount()) {
-            //noinspection BusyWait
-            Thread.sleep(1000);
-        }
     }
 }

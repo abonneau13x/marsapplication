@@ -36,7 +36,7 @@ public class Bootstrap implements CommandLineRunner {
                     String earthDate = Util.parseEarthDate(rawDate);
                     if(earthDate != null) {
                         try {
-                            photoService.processPhotos(earthDate);
+                            photoService.cachePhotos(earthDate);
                         } catch(Exception e) {
                             LOG.error("Failed to process photos for file [" + arg + "], date [" + rawDate + "].", e);
                         }

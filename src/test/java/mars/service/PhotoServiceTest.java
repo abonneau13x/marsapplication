@@ -31,9 +31,9 @@ public class PhotoServiceTest {
     @Test
     public void testProcessPhotos() throws MarsApplicationException, InterruptedException {
         FileUtils.deleteQuietly(new File(PHOTO_CACHE));
-        photoService.processPhotos(DATE1);
+        photoService.cachePhotos(DATE1);
 
-        waitForTasks();
+        Thread.sleep(60000);
 
         File dateDirectory = new File(PHOTO_CACHE + "/" + DATE1);
         Assert.assertTrue(dateDirectory.exists());
@@ -86,13 +86,5 @@ public class PhotoServiceTest {
 
         Assert.assertTrue(photoService.clearCache());
         Assert.assertFalse(cacheDirectory.exists());
-    }
-
-    private void waitForTasks() throws InterruptedException {
-        ThreadPoolTaskExecutor threadPoolTaskExecutor = (ThreadPoolTaskExecutor) taskExecutor;
-        while(threadPoolTaskExecutor.getThreadPoolExecutor().getCompletedTaskCount() < threadPoolTaskExecutor.getThreadPoolExecutor().getTaskCount()) {
-            //noinspection BusyWait
-            Thread.sleep(1000);
-        }
     }
 }

@@ -27,7 +27,7 @@ public class PhotoController {
             return false;
         }
         try {
-            photoService.processPhotos(earthDate);
+            photoService.cachePhotos(earthDate);
         } catch (MarsApplicationException e) {
             LOG.error("Failed to cache photos for date [" + rawDate + "].", e);
             return false;
