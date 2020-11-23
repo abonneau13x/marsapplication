@@ -1,8 +1,6 @@
 package mars.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import org.apache.commons.io.FileUtils;
@@ -23,8 +21,10 @@ import java.util.List;
 @Service
 public class PhotoServiceImpl implements PhotoService {
     private static final Log LOG = LogFactory.getLog(PhotoServiceImpl.class);
-    private final RoverService roverService;
 
+    private static final int API_PAGE_SIZE = 25;
+
+    private final RoverService roverService;
     private final TaskExecutor taskExecutor;
     private final ObjectMapper objectMapper;
 
@@ -76,7 +76,7 @@ public class PhotoServiceImpl implements PhotoService {
         List<Photo> result = new ArrayList<>();
         for(String roverName : roverNames) {
             try(CloseableHttpClient client = HttpClients.createDefault()) {
-                JsonNode photos;
+                PhotoResponse response;
                 int page = 1;
                 do {
                     if(LOG.isDebugEnabled()) {
@@ -91,19 +91,16 @@ public class PhotoServiceImpl implements PhotoService {
                     if (rawResponse.getStatusLine().getStatusCode() != 200) {
                         throw new MarsApplicationException("Request for photos returned status code [" + rawResponse.getStatusLine().getStatusCode() + "].");
                     }
-                    JsonNode response = objectMapper.readValue(
+                    response = objectMapper.readValue(
                             rawResponse.getEntity().getContent(),
-                            ObjectNode.class
+                            PhotoResponse.class
                     );
-                    photos = response.get("photos");
-                    for (JsonNode photo : photos) {
-                        result.add(new Photo(photo.get("earth_date").asText(), photo.get("img_src").asText()));
-                    }
+                    result.addAll(response.getPhotos());
                     if(LOG.isDebugEnabled()) {
                         LOG.debug("Done requesting page " + page + " of photos for rover [" + roverName + "], date [" + earthDate + "].");
                     }
                     page++;
-                } while(photos.size() >= 25);
+                } while(response.getPhotos().size() >= API_PAGE_SIZE);
 
             } catch (IOException e) {
                 throw new MarsApplicationException("Failed to request photos for rover [" + roverName + "], date [" + earthDate + "].", e);

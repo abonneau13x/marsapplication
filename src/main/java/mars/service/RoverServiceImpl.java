@@ -1,10 +1,8 @@
 package mars.service;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import mars.core.MarsApplicationException;
 import mars.core.Constants;
+import mars.core.MarsApplicationException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.client.methods.HttpGet;
@@ -32,15 +30,13 @@ public class RoverServiceImpl implements RoverService {
         }
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet(Constants.BASE_URL + "/rovers?" + Constants.API_KEY_PARAM);
-            ObjectNode response = objectMapper.readValue(
+            RoverResponse response = objectMapper.readValue(
                     client.execute(request).getEntity().getContent(),
-                    ObjectNode.class
+                    RoverResponse.class
             );
-
-            JsonNode rovers = response.get("rovers");
-            List<String> result = new ArrayList<>(rovers.size());
-            for (JsonNode jsonNode : rovers) {
-                result.add(jsonNode.get("name").asText());
+            List<String> result = new ArrayList<>(response.getRovers().size());
+            for (Rover rover : response.getRovers()) {
+                result.add(rover.getName());
             }
             if(LOG.isDebugEnabled()) {
                 LOG.debug("Done requesting rover names.");
