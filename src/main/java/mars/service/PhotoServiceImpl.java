@@ -51,25 +51,21 @@ public class PhotoServiceImpl implements PhotoService {
         if(LOG.isDebugEnabled()) {
             LOG.debug("Processing photos for earthDate [" + earthDate + "].");
         }
-        try {
-            List<String> roverNames = roverService.requestRoverNames();
-            List<Photo> photos = requestPhotos(roverNames, earthDate);
-            for (Photo photo : photos) {
-                // Download photos asynchronously.
-                taskExecutor.execute(
-                        new PhotoDownloadTask(
-                                photo.getEarthDate(),
-                                photo.getImgSrc()
-                        )
-                );
-            }
-            if(LOG.isDebugEnabled()) {
-                LOG.debug("Done submitting photo processing tasks for earthDate [" + earthDate + "].");
-            }
-            return photos;
-        } catch(Exception e) {
-            throw new MarsApplicationException("Failed to process photos for date [" + earthDate + "].", e);
+        List<String> roverNames = roverService.requestRoverNames();
+        List<Photo> photos = requestPhotos(roverNames, earthDate);
+        for (Photo photo : photos) {
+            // Download photos asynchronously.
+            taskExecutor.execute(
+                    new PhotoDownloadTask(
+                            photo.getEarthDate(),
+                            photo.getImgSrc()
+                    )
+            );
         }
+        if(LOG.isDebugEnabled()) {
+            LOG.debug("Done submitting photo processing tasks for earthDate [" + earthDate + "].");
+        }
+        return photos;
     }
 
     public List<Photo> requestPhotos(List<String> roverNames, String earthDate) throws MarsApplicationException {

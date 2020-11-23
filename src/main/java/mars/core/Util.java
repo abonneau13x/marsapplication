@@ -5,6 +5,7 @@ import org.apache.commons.lang3.time.DateUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import java.text.ParseException;
 import java.util.Date;
 
 public class Util {
@@ -22,7 +23,7 @@ public class Util {
         try {
             Date date = DateUtils.parseDateStrictly(rawDate, SUPPORTED_DATE_FORMATS);
             return DateFormatUtils.format(date, EARTH_DATE_FORMAT);
-        } catch(Exception e) {
+        } catch(ParseException e) {
             if(LOG.isDebugEnabled()) {
                 LOG.debug("[" + rawDate + "] is not a valid date.");
             }

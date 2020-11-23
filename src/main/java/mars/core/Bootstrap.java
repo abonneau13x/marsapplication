@@ -9,6 +9,7 @@ import mars.service.PhotoService;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileReader;
+import java.io.IOException;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
@@ -37,12 +38,12 @@ public class Bootstrap implements CommandLineRunner {
                     if(earthDate != null) {
                         try {
                             photoService.cachePhotos(earthDate);
-                        } catch(Exception e) {
+                        } catch(MarsApplicationException e) {
                             LOG.error("Failed to process photos for file [" + arg + "], date [" + rawDate + "].", e);
                         }
                     }
                 }
-            } catch(Exception e) {
+            } catch(IOException e) {
                 LOG.error("Failed to process photos for file [" + arg + "].", e);
             }
             if(LOG.isDebugEnabled()) {
