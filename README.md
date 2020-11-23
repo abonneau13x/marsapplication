@@ -7,8 +7,9 @@ from the command line. Photos for the dates indicated by the command line
 arguments will be cached immediately.
 
 The application also provides a simple API with three endpoints.
-* http://localhost:8080/api/v1/cache
-* http://localhost:8080/api/v1/removeFromCache
+Examples:
+* http://localhost:8080/api/v1/cache?date=2016-07-13
+* http://localhost:8080/api/v1/removeFromCache?date=2016-07-13
 * http://localhost:8080/api/v1/clearCache
 
 The cache and removeFromCache methods accept a "date" parameter.
