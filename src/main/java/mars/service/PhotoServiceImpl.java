@@ -4,12 +4,12 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import org.apache.commons.io.FileUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.task.TaskExecutor;
 import org.springframework.stereotype.Service;
 
@@ -20,7 +20,7 @@ import java.util.List;
 
 @Service
 public class PhotoServiceImpl implements PhotoService {
-    private static final Log LOG = LogFactory.getLog(PhotoServiceImpl.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PhotoServiceImpl.class);
 
     private static final int API_PAGE_SIZE = 25;
 
@@ -39,7 +39,7 @@ public class PhotoServiceImpl implements PhotoService {
                 "photo_cache" + "/" + earthDate
         );
         if(dateDirectory.exists()) {
-            LOG.debug("Date [" + earthDate + "] is already cached.");
+            LOGGER.debug("Date [" + earthDate + "] is already cached.");
             String[] fileNames = dateDirectory.list();
             //noinspection ConstantConditions
             List<Photo> result = new ArrayList<>(fileNames.length);
@@ -48,8 +48,8 @@ public class PhotoServiceImpl implements PhotoService {
             }
             return result;
         }
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Processing photos for earthDate [" + earthDate + "].");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Processing photos for earthDate [" + earthDate + "].");
         }
         List<String> roverNames = roverService.requestRoverNames();
         List<Photo> photos = requestPhotos(roverNames, earthDate);
@@ -62,15 +62,15 @@ public class PhotoServiceImpl implements PhotoService {
                     )
             );
         }
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Done submitting photo processing tasks for earthDate [" + earthDate + "].");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Done submitting photo processing tasks for earthDate [" + earthDate + "].");
         }
         return photos;
     }
 
     public List<Photo> requestPhotos(List<String> roverNames, String earthDate) throws MarsApplicationException {
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Requesting photos for earthDate [" + earthDate + "].");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Requesting photos for earthDate [" + earthDate + "].");
         }
 
         List<Photo> result = new ArrayList<>();
@@ -79,8 +79,8 @@ public class PhotoServiceImpl implements PhotoService {
                 PhotoResponse response;
                 int page = 1;
                 do {
-                    if(LOG.isDebugEnabled()) {
-                        LOG.debug("Requesting page " + page + " of photos for rover [" + roverName + "], date [" + earthDate + "].");
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Requesting page " + page + " of photos for rover [" + roverName + "], date [" + earthDate + "].");
                     }
                     HttpGet request = new HttpGet(Constants.BASE_URL + "/rovers/" + roverName + "/photos" +
                             "?earth_date=" + earthDate +
@@ -96,8 +96,8 @@ public class PhotoServiceImpl implements PhotoService {
                             PhotoResponse.class
                     );
                     result.addAll(response.getPhotos());
-                    if(LOG.isDebugEnabled()) {
-                        LOG.debug("Done requesting page " + page + " of photos for rover [" + roverName + "], date [" + earthDate + "].");
+                    if(LOGGER.isDebugEnabled()) {
+                        LOGGER.debug("Done requesting page " + page + " of photos for rover [" + roverName + "], date [" + earthDate + "].");
                     }
                     page++;
                 } while(response.getPhotos().size() >= API_PAGE_SIZE);
@@ -106,30 +106,30 @@ public class PhotoServiceImpl implements PhotoService {
                 throw new MarsApplicationException("Failed to request photos for rover [" + roverName + "], date [" + earthDate + "].", e);
             }
         }
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Done requesting photos for earthDate [" + earthDate + "].");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Done requesting photos for earthDate [" + earthDate + "].");
         }
         return result;
     }
 
     public boolean removeFromCache(String earthDate) {
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Removing date [" + earthDate + "] from cache.");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Removing date [" + earthDate + "] from cache.");
         }
         boolean result = FileUtils.deleteQuietly(new File("photo_cache/" + earthDate));
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Done removing date [" + earthDate + "] from cache.");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Done removing date [" + earthDate + "] from cache.");
         }
         return result;
     }
 
     public boolean clearCache() {
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Clearing cache.");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Clearing cache.");
         }
         boolean result = FileUtils.deleteQuietly(new File("photo_cache"));
-        if(LOG.isDebugEnabled()) {
-            LOG.debug("Done clearing cache.");
+        if(LOGGER.isDebugEnabled()) {
+            LOGGER.debug("Done clearing cache.");
         }
         return result;
     }

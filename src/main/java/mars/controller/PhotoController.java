@@ -4,11 +4,8 @@ import mars.core.MarsApplicationException;
 import mars.core.Util;
 import mars.service.Photo;
 import mars.service.PhotoService;
-import org.apache.commons.lang3.StringUtils;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.http.client.methods.HttpHead;
-import org.springframework.core.io.FileSystemResource;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -20,7 +17,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.Files;
 import java.util.Collections;
 import java.util.List;
 
@@ -28,7 +24,7 @@ import java.util.List;
 @RequestMapping("api/v1")
 public class PhotoController {
 
-    private static final Log LOG = LogFactory.getLog(PhotoController.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(PhotoController.class);
 
     private final PhotoService photoService;
     public PhotoController(PhotoService photoService) {

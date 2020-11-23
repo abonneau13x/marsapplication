@@ -1,10 +1,10 @@
 package mars.core;
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
+import mars.service.PhotoService;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.stereotype.Component;
-import mars.service.PhotoService;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -13,7 +13,7 @@ import java.io.IOException;
 
 @Component
 public class Bootstrap implements CommandLineRunner {
-    private static final Log LOG = LogFactory.getLog(Bootstrap.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(Bootstrap.class);
 
     private final PhotoService photoService;
 
@@ -28,8 +28,8 @@ public class Bootstrap implements CommandLineRunner {
         }
 
         for (String arg : args) {
-            if(LOG.isDebugEnabled()) {
-                LOG.debug("Processing dates from [" + arg + "].");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Processing dates from [" + arg + "].");
             }
             try (BufferedReader reader = new BufferedReader(new FileReader(new File(arg)))) {
                 String rawDate;
@@ -39,15 +39,15 @@ public class Bootstrap implements CommandLineRunner {
                         try {
                             photoService.cachePhotos(earthDate);
                         } catch(MarsApplicationException e) {
-                            LOG.error("Failed to process photos for file [" + arg + "], date [" + rawDate + "].", e);
+                            LOGGER.error("Failed to process photos for file [" + arg + "], date [" + rawDate + "].", e);
                         }
                     }
                 }
             } catch(IOException e) {
-                LOG.error("Failed to process photos for file [" + arg + "].", e);
+                LOGGER.error("Failed to process photos for file [" + arg + "].", e);
             }
-            if(LOG.isDebugEnabled()) {
-                LOG.debug("Done processing dates from [" + arg + "].");
+            if(LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Done processing dates from [" + arg + "].");
             }
         }
     }
