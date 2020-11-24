@@ -1,0 +1,56 @@
+plugins {
+    id 'java'
+    id 'maven-publish'
+    id 'org.springframework.boot' version '2.2.7.RELEASE'
+}
+
+repositories {
+    mavenLocal()
+    maven {
+        url = uri('https://repo.maven.apache.org/maven2/')
+    }
+}
+
+configurations {
+    all {
+        //noinspection GroovyAssignabilityCheck
+        exclude group: 'org.springframework.boot', module: 'spring-boot-starter-logging'
+    }
+}
+
+dependencies {
+    compile 'commons-io:commons-io:2.8.0'
+    compile 'org.apache.commons:commons-lang3:3.9'
+    compile 'org.apache.httpcomponents:httpclient:4.5.13'
+    compile 'com.fasterxml.jackson.core:jackson-databind:2.10.2'
+    compile 'org.springframework:spring-core:5.2.6.RELEASE'
+    compile 'org.springframework:spring-context:5.2.6.RELEASE'
+    compile 'org.springframework:spring-web:5.2.6.RELEASE'
+    compile 'org.springframework.boot:spring-boot:2.2.7.RELEASE'
+    compile 'org.springframework.boot:spring-boot-autoconfigure:2.2.7.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-web:2.2.7.RELEASE'
+    compile 'org.springframework.boot:spring-boot-starter-log4j2:2.2.7.RELEASE'
+    testCompile 'junit:junit:4.12'
+    testCompile 'org.springframework:spring-test:5.2.6.RELEASE'
+    testCompile 'org.springframework.boot:spring-boot-test:2.2.7.RELEASE'
+}
+
+group = 'org.example'
+version = '1.0-SNAPSHOT'
+description = 'codingassessment'
+java.sourceCompatibility = JavaVersion.VERSION_11
+
+jar {
+    manifest {
+        attributes(
+                'Main-Class': 'mars.MarsApplication'
+        )
+    }
+    from {
+        configurations.compile.collect { it.isDirectory() ? it : zipTree(it) }
+    }
+}
+
+tasks.withType(JavaCompile) {
+    options.encoding = 'UTF-8'
+}
