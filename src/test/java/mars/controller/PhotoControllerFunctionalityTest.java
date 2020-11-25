@@ -20,7 +20,6 @@ import org.testcontainers.containers.DockerComposeContainer;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.charset.Charset;
 import java.util.Collections;
 import java.util.List;
 
@@ -48,6 +47,7 @@ public class PhotoControllerFunctionalityTest {
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/download?date=" + DATE + "&fileName=" + IMG_SRC);
             HttpResponse response = client.execute(request);
+            Assert.assertEquals(200, response.getStatusLine().getStatusCode());
             byte[] photoData = IOUtils.toByteArray(response.getEntity().getContent());
             Assert.assertEquals(18510, photoData.length);
         }
@@ -70,8 +70,8 @@ public class PhotoControllerFunctionalityTest {
 
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/removeFromCache?date=" + DATE);
-            HttpResponse rawResponse = client.execute(request);
-            Assert.assertEquals("true", IOUtils.toString(rawResponse.getEntity().getContent(), Charset.defaultCharset()));
+            HttpResponse response = client.execute(request);
+            Assert.assertEquals(200, response.getStatusLine().getStatusCode());
         }
 
         Assert.assertTrue(getCachedDates().isEmpty());
@@ -84,7 +84,11 @@ public class PhotoControllerFunctionalityTest {
 
         Assert.assertEquals(Collections.singletonList(DATE), getCachedDates());
 
-        clearCache();
+        try(CloseableHttpClient client = HttpClients.createDefault()) {
+            HttpGet request = new HttpGet("http://localhost:8080/api/v1/clearCache");
+            HttpResponse response = client.execute(request);
+            Assert.assertEquals(200, response.getStatusLine().getStatusCode());
+        }
 
         Assert.assertTrue(getCachedDates().isEmpty());
     }
@@ -92,7 +96,8 @@ public class PhotoControllerFunctionalityTest {
     private void clearCache() throws IOException {
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/clearCache");
-            client.execute(request);
+            HttpResponse response = client.execute(request);
+            Assert.assertEquals(200, response.getStatusLine().getStatusCode());
         }
     }
 
@@ -100,6 +105,7 @@ public class PhotoControllerFunctionalityTest {
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/cache?date=" + DATE);
             HttpResponse response = client.execute(request);
+            Assert.assertEquals(200, response.getStatusLine().getStatusCode());
             //noinspection Convert2Diamond
             return objectMapper.readValue(
                     response.getEntity().getContent(),
@@ -112,6 +118,7 @@ public class PhotoControllerFunctionalityTest {
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/cachedDates");
             HttpResponse response = client.execute(request);
+            Assert.assertEquals(200, response.getStatusLine().getStatusCode());
             //noinspection Convert2Diamond
             return objectMapper.readValue(
                     response.getEntity().getContent(),

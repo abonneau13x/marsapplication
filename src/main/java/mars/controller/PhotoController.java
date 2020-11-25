@@ -62,16 +62,16 @@ public class PhotoController {
     }
 
     @RequestMapping("/removeFromCache")
-    public boolean removeFromCache(@RequestParam("date") String rawDate) {
+    public void removeFromCache(@RequestParam("date") String rawDate) throws MarsApplicationException {
         String earthDate = Util.parseEarthDate(rawDate);
         if(earthDate == null) {
-            return false;
+            throw new MarsApplicationException("[" + rawDate + "] is not a valid date.");
         }
-        return photoService.removeFromCache(earthDate);
+        photoService.removeFromCache(earthDate);
     }
 
     @RequestMapping("/clearCache")
-    public boolean clearCache() {
-        return photoService.clearCache();
+    public void clearCache() throws MarsApplicationException {
+        photoService.clearCache();
     }
 }

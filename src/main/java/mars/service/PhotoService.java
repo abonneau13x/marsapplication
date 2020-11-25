@@ -7,6 +7,6 @@ import java.util.List;
 public interface PhotoService {
     List<Photo> cachePhotos(String earthDate) throws MarsApplicationException;
     List<String> getCachedDates();
-    boolean removeFromCache(String earthDate);
-    boolean clearCache();
+    void removeFromCache(String earthDate) throws MarsApplicationException;
+    void clearCache() throws MarsApplicationException;
 }

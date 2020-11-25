@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
 
 import java.io.File;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -66,25 +67,45 @@ public class PhotoServiceImpl implements PhotoService {
         return cachedDates != null ? Arrays.asList(cachedDates) : Collections.emptyList();
     }
 
-    public boolean removeFromCache(String earthDate) {
+    public void removeFromCache(String earthDate) throws MarsApplicationException {
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Removing date [" + earthDate + "] from cache.");
         }
-        boolean result = FileUtils.deleteQuietly(new File("photo_cache/" + earthDate));
+        File dateDirectoryFile = new File("photo_cache/" + earthDate);
+        if(!dateDirectoryFile.exists()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Date [" + earthDate + "] does not exist in cache.");
+            }
+            return;
+        }
+        try {
+            FileUtils.deleteDirectory(dateDirectoryFile);
+        } catch (IllegalArgumentException|IOException e) {
+            throw new MarsApplicationException("Failed to remove date [" + earthDate + "] from cache.", e);
+        }
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Done removing date [" + earthDate + "] from cache.");
         }
-        return result;
     }
 
-    public boolean clearCache() {
+    public void clearCache() throws MarsApplicationException {
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Clearing cache.");
         }
-        boolean result = FileUtils.deleteQuietly(new File("photo_cache"));
+        File photoCacheFile = new File("photo_cache");
+        if(!photoCacheFile.exists()) {
+            if (LOGGER.isDebugEnabled()) {
+                LOGGER.debug("Cache does not exist.");
+            }
+            return;
+        }
+        try {
+            FileUtils.cleanDirectory(photoCacheFile);
+        } catch (IllegalArgumentException|IOException e) {
+            throw new MarsApplicationException("Failed to clear cache.", e);
+        }
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Done clearing cache.");
         }
-        return result;
     }
 }

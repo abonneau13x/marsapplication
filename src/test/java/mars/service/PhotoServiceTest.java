@@ -11,7 +11,7 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Objects;
 
 @RunWith(SpringJUnit4ClassRunner.class)
@@ -39,11 +39,11 @@ public class PhotoServiceTest {
         photoService.clearCache();
         photoService.cachePhotos(DATE1);
 
-        Assert.assertEquals(Arrays.asList(DATE1), photoService.getCachedDates());
+        Assert.assertEquals(Collections.singletonList(DATE1), photoService.getCachedDates());
     }
 
     @Test
-    public void testRemoveFromCache() {
+    public void testRemoveFromCache() throws MarsApplicationException {
         FileUtils.deleteQuietly(new File(PHOTO_CACHE));
 
         File cacheDirectory = new File(PHOTO_CACHE);
@@ -58,23 +58,25 @@ public class PhotoServiceTest {
         //noinspection ResultOfMethodCallIgnored
         dateDirectory2.mkdir();
 
-        Assert.assertTrue(photoService.removeFromCache(DATE1));
+        photoService.removeFromCache(DATE1);
         Assert.assertTrue(cacheDirectory.exists());
         Assert.assertFalse(dateDirectory1.exists());
         Assert.assertTrue(dateDirectory2.exists());
-        Assert.assertFalse(photoService.removeFromCache(DATE1));
 
-        Assert.assertTrue(photoService.removeFromCache(DATE2));
+        // Should not throw exception since the directory does not exist.
+        photoService.removeFromCache(DATE1);
+
+        photoService.removeFromCache(DATE2);
         Assert.assertTrue(cacheDirectory.exists());
         Assert.assertFalse(dateDirectory1.exists());
         Assert.assertFalse(dateDirectory2.exists());
-        Assert.assertFalse(photoService.removeFromCache(DATE1));
 
-
+        // Should not throw exception since the directory does not exist.
+        photoService.removeFromCache(DATE1);
     }
 
     @Test
-    public void testClearCache() {
+    public void testClearCache() throws MarsApplicationException {
         FileUtils.deleteQuietly(new File(PHOTO_CACHE));
 
         File cacheDirectory = new File(PHOTO_CACHE);
@@ -86,7 +88,7 @@ public class PhotoServiceTest {
         //noinspection ResultOfMethodCallIgnored
         new File(PHOTO_CACHE + "/" + DATE2).mkdir();
 
-        Assert.assertTrue(photoService.clearCache());
-        Assert.assertFalse(cacheDirectory.exists());
+        photoService.clearCache();
+        Assert.assertEquals(0, cacheDirectory.list().length);
     }
 }
