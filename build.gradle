@@ -34,6 +34,7 @@ dependencies {
     testCompile 'org.springframework:spring-test:5.2.6.RELEASE'
     testCompile 'org.springframework.boot:spring-boot-test:2.2.7.RELEASE'
     testCompile 'org.testcontainers:testcontainers:1.15.0'
+    testImplementation 'org.mockito:mockito-core:3.6.28'
 }
 
 group = 'org.example'
