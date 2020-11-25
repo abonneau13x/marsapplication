@@ -9,6 +9,8 @@ import org.springframework.stereotype.Service;
 
 import java.io.File;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 @Service
@@ -56,6 +58,12 @@ public class PhotoServiceImpl implements PhotoService {
             LOGGER.debug("Done downloading " + photos.size() + " photos for earthDate [" + earthDate + "].");
         }
         return photos;
+    }
+
+    @Override
+    public List<String> getCachedDates() {
+        String[] cachedDates = new File("photo_cache").list();
+        return cachedDates != null ? Arrays.asList(cachedDates) : Collections.emptyList();
     }
 
     public boolean removeFromCache(String earthDate) {

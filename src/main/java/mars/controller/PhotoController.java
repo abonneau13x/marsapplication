@@ -4,8 +4,6 @@ import mars.core.MarsApplicationException;
 import mars.core.Util;
 import mars.service.Photo;
 import mars.service.PhotoService;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
 import org.springframework.http.HttpHeaders;
@@ -23,9 +21,6 @@ import java.util.List;
 @RestController
 @RequestMapping("api/v1")
 public class PhotoController {
-
-    private static final Logger LOGGER = LoggerFactory.getLogger(PhotoController.class);
-
     private final PhotoService photoService;
     public PhotoController(PhotoService photoService) {
         this.photoService = photoService;
@@ -38,6 +33,11 @@ public class PhotoController {
             return Collections.emptyList();
         }
         return photoService.cachePhotos(earthDate);
+    }
+
+    @RequestMapping("/cachedDates")
+    public List<String> cachedDates() {
+        return photoService.getCachedDates();
     }
 
     @RequestMapping("/download")

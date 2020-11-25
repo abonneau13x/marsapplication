@@ -11,26 +11,35 @@ import org.springframework.test.context.ContextConfiguration;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Objects;
 
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MarsApplication.class)
 public class PhotoServiceTest {
     private static final String PHOTO_CACHE = "photo_cache";
-    private static final String DATE1 = "2016-07-13";
+    private static final String DATE1 = "2018-06-02";
     private static final String DATE2= "2017-02-27";
 
     @Autowired
     private PhotoService photoService;
 
     @Test
-    public void testProcessPhotos() throws MarsApplicationException {
+    public void testCachePhotos() throws MarsApplicationException {
         FileUtils.deleteQuietly(new File(PHOTO_CACHE));
         photoService.cachePhotos(DATE1);
 
         File dateDirectory = new File(PHOTO_CACHE + "/" + DATE1);
         Assert.assertTrue(dateDirectory.exists());
-        Assert.assertEquals(442, Objects.requireNonNull(dateDirectory.list()).length);
+        Assert.assertEquals(32, Objects.requireNonNull(dateDirectory.list()).length);
+    }
+
+    @Test
+    public void testGetCachedDates() throws MarsApplicationException {
+        photoService.clearCache();
+        photoService.cachePhotos(DATE1);
+
+        Assert.assertEquals(Arrays.asList(DATE1), photoService.getCachedDates());
     }
 
     @Test
