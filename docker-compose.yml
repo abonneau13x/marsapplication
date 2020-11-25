@@ -1,0 +1,12 @@
+version: "3.7"
+
+services:
+  mars-server:
+    image: abonneau/mars-server
+    ports:
+      - 8080:8080
+    volumes:
+      - photo_cache:/photo_cache
+
+volumes:
+  photo_cache:
