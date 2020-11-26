@@ -1,4 +1,4 @@
-This is a Spring Boot application that can cache image files
+This is a Spring Boot application with docker integration that can cache image files
 downloaded from NASA's Mars Rover Photos API.
 
 When built, the application produces an executable JAR file.
@@ -37,7 +37,8 @@ Allowed date formats are:
 * MMM-d-yyyy
 * yyyy-MM-dd.
 
-Note: PhotoControllerTest appears to have regressed,
-most likely as a result of dependency changes. It appears
-that Tomcat is no longer starting at the beginning
-of the test. This requires further investigation.
+The application also includes a docker-integrated client that runs on port 80.
+At present it is only a Hello World.
+
+The client can be accessed via:
+* http://localhost
