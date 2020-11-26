@@ -8,6 +8,7 @@ public class Photo {
     @JsonProperty("img_src")
     private String imgSrc;
 
+    @SuppressWarnings("unused")
     public Photo() {
     }
 

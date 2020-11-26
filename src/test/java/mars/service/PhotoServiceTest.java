@@ -1,6 +1,7 @@
 package mars.service;
 
 import mars.MarsApplication;
+import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.io.IOUtils;
@@ -27,7 +28,6 @@ import java.util.Objects;
 @RunWith(SpringJUnit4ClassRunner.class)
 @ContextConfiguration(classes = MarsApplication.class)
 public class PhotoServiceTest {
-    private static final String PHOTO_CACHE = "photo_cache";
     private static final String ROVER1 = "Rover1";
     private static final String ROVER2 = "Rover2";
     private static final String DATE1 = "2018-06-02";
@@ -49,7 +49,7 @@ public class PhotoServiceTest {
     public void testCachePhotos() throws MarsApplicationException, IOException {
         PhotoService photoService = new PhotoServiceImpl(roverService, marsApiService);
 
-        FileUtils.deleteQuietly(new File(PHOTO_CACHE));
+        FileUtils.deleteQuietly(new File(Constants.PHOTO_CACHE));
 
         cachePhotos(photoService);
     }
@@ -68,17 +68,17 @@ public class PhotoServiceTest {
     public void testRemoveFromCache() throws MarsApplicationException {
         PhotoService photoService = new PhotoServiceImpl(null, null);
 
-        FileUtils.deleteQuietly(new File(PHOTO_CACHE));
+        FileUtils.deleteQuietly(new File(Constants.PHOTO_CACHE));
 
-        File cacheDirectory = new File(PHOTO_CACHE);
+        File cacheDirectory = new File(Constants.PHOTO_CACHE);
         //noinspection ResultOfMethodCallIgnored
         cacheDirectory.mkdir();
 
-        File dateDirectory1 = new File(PHOTO_CACHE + "/" + DATE1);
+        File dateDirectory1 = new File(Constants.PHOTO_CACHE + "/" + DATE1);
         //noinspection ResultOfMethodCallIgnored
         dateDirectory1.mkdir();
 
-        File dateDirectory2 = new File(PHOTO_CACHE + "/" + DATE2);
+        File dateDirectory2 = new File(Constants.PHOTO_CACHE + "/" + DATE2);
         //noinspection ResultOfMethodCallIgnored
         dateDirectory2.mkdir();
 
@@ -103,16 +103,16 @@ public class PhotoServiceTest {
     public void testClearCache() throws MarsApplicationException {
         PhotoService photoService = new PhotoServiceImpl(null, null);
 
-        FileUtils.deleteQuietly(new File(PHOTO_CACHE));
+        FileUtils.deleteQuietly(new File(Constants.PHOTO_CACHE));
 
-        File cacheDirectory = new File(PHOTO_CACHE);
+        File cacheDirectory = new File(Constants.PHOTO_CACHE);
         //noinspection ResultOfMethodCallIgnored
         cacheDirectory.mkdir();
 
         //noinspection ResultOfMethodCallIgnored
-        new File(PHOTO_CACHE + "/" + DATE1).mkdir();
+        new File(Constants.PHOTO_CACHE + "/" + DATE1).mkdir();
         //noinspection ResultOfMethodCallIgnored
-        new File(PHOTO_CACHE + "/" + DATE2).mkdir();
+        new File(Constants.PHOTO_CACHE + "/" + DATE2).mkdir();
 
         photoService.clearCache();
         String[] cachedDates = cacheDirectory.list();
@@ -158,14 +158,14 @@ public class PhotoServiceTest {
         Mockito.verify(marsApiService, Mockito.times(1)).downloadPhoto(Mockito.eq(PREFIX + IMG_SRC1), Mockito.notNull());
         Mockito.verify(marsApiService, Mockito.times(1)).downloadPhoto(Mockito.eq(PREFIX + IMG_SRC2), Mockito.notNull());
 
-        File dateDirectory = new File(PHOTO_CACHE + "/" + DATE1);
+        File dateDirectory = new File(Constants.PHOTO_CACHE + "/" + DATE1);
         Assert.assertTrue(dateDirectory.exists());
         Assert.assertEquals(2, Objects.requireNonNull(dateDirectory.list()).length);
 
-        File img1 = new File(PHOTO_CACHE + "/" + DATE1 + "/" + IMG_SRC1);
+        File img1 = new File(Constants.PHOTO_CACHE + "/" + DATE1 + "/" + IMG_SRC1);
         Assert.assertEquals("1", IOUtils.toString(img1.toURI(), Charset.defaultCharset()));
 
-        File img2 = new File(PHOTO_CACHE + "/" + DATE1 + "/" + IMG_SRC2);
+        File img2 = new File(Constants.PHOTO_CACHE + "/" + DATE1 + "/" + IMG_SRC2);
         Assert.assertEquals("2", IOUtils.toString(img2.toURI(), Charset.defaultCharset()));
     }
 }

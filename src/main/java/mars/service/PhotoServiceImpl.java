@@ -1,5 +1,6 @@
 package mars.service;
 
+import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
@@ -28,7 +29,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     public List<Photo> cachePhotos(String earthDate) throws MarsApplicationException {
         File dateDirectory = new File(
-                "photo_cache" + "/" + earthDate
+                Constants.PHOTO_CACHE + "/" + earthDate
         );
         if(dateDirectory.exists()) {
             LOGGER.debug("Date [" + earthDate + "] is already cached.");
@@ -47,7 +48,7 @@ public class PhotoServiceImpl implements PhotoService {
         List<Photo> photos = marsApiService.requestPhotos(roverNames, earthDate);
         photos.parallelStream().forEach(photo -> {
             File photoFile = new File(
-                    "photo_cache" +
+                    Constants.PHOTO_CACHE +
                             "/" + earthDate +
                             "/" + StringUtils.substringAfterLast(photo.getImgSrc(), "/")
             );
@@ -63,7 +64,7 @@ public class PhotoServiceImpl implements PhotoService {
 
     @Override
     public List<String> getCachedDates() {
-        String[] cachedDates = new File("photo_cache").list();
+        String[] cachedDates = new File(Constants.PHOTO_CACHE).list();
         return cachedDates != null ? Arrays.asList(cachedDates) : Collections.emptyList();
     }
 
@@ -71,7 +72,7 @@ public class PhotoServiceImpl implements PhotoService {
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Removing date [" + earthDate + "] from cache.");
         }
-        File dateDirectoryFile = new File("photo_cache/" + earthDate);
+        File dateDirectoryFile = new File(Constants.PHOTO_CACHE + "/" + earthDate);
         if(!dateDirectoryFile.exists()) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Date [" + earthDate + "] does not exist in cache.");
@@ -92,7 +93,7 @@ public class PhotoServiceImpl implements PhotoService {
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Clearing cache.");
         }
-        File photoCacheFile = new File("photo_cache");
+        File photoCacheFile = new File(Constants.PHOTO_CACHE);
         if(!photoCacheFile.exists()) {
             if (LOGGER.isDebugEnabled()) {
                 LOGGER.debug("Cache does not exist.");

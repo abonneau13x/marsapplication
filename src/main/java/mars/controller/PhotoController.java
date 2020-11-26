@@ -1,5 +1,6 @@
 package mars.controller;
 
+import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import mars.core.Util;
 import mars.service.Photo;
@@ -47,7 +48,7 @@ public class PhotoController {
             throw new MarsApplicationException("[" + rawDate + "] is not a valid date.");
         }
         File photoFile = new File(
-                "photo_cache" +
+                Constants.PHOTO_CACHE +
                         "/" + earthDate +
                         "/" + fileName
         );
