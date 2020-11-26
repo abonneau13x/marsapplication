@@ -1,13 +1,21 @@
 version: "3.7"
 
 services:
-  mars-server:
+  marsserver:
     build: './marsserver'
-    image: abonneau/mars-server
+    image: abonneau/marsserver
     ports:
       - 8080:8080
     volumes:
       - photo_cache:/photo_cache
+  marsclient:
+    build: './marsclient'
+    image: abonneau/marsclient
+    ports:
+      - 80:80
 
 volumes:
   photo_cache:
+
+networks:
+  default:

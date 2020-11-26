@@ -36,7 +36,7 @@ public class PhotoControllerFunctionalityTest {
     @SuppressWarnings("rawtypes")
     public static DockerComposeContainer compose = new DockerComposeContainer(
             new File("../docker-compose.yml")
-    ).withExposedService("mars-server", 8080);
+    ).withExposedService("marsserver", 8080);
 
     @Test
     public void testCacheAndDownload() throws IOException {

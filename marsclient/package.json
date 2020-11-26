@@ -1,0 +1,14 @@
+{
+  "name": "mars_client",
+  "version": "1.0.0",
+  "description": "Mars Application Client",
+  "author": "Adam Bonneau <abonneau13x@gmail.com>",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "dependencies": {
+    "express": "^4.16.1",
+    "react-dom": "^17.0.1"
+  }
+}
