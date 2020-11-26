@@ -2,6 +2,7 @@ version: "3.7"
 
 services:
   mars-server:
+    build: './marsserver'
     image: abonneau/mars-server
     ports:
       - 8080:8080

@@ -35,7 +35,7 @@ public class PhotoControllerFunctionalityTest {
     @ClassRule
     @SuppressWarnings("rawtypes")
     public static DockerComposeContainer compose = new DockerComposeContainer(
-            new File("docker-compose.yml")
+            new File("../docker-compose.yml")
     ).withExposedService("mars-server", 8080);
 
     @Test
