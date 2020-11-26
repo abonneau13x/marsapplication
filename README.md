@@ -19,10 +19,9 @@ photos cached for that date.
 The download method accepts a "date" parameter and a "fileName"
 parameter and returns the image file.
  
-The removeFromCache method accepts a "date" parameter and returns
-a boolean indicating success or failure.
+The removeFromCache method accepts a "date" parameter and does not return anything.
 
-The clearCache method does not accept any parameters.
+The clearCache method does not accept any parameters and does not return anything.
 
 The number of threads used to download images can be configured
 via the spring.task.execution.pool.max-size property in
