@@ -7,7 +7,32 @@
 </head>
 <body>
 
-<div id="root">Hello World</div>
+<script>
+    addDate = function() {
+        let date = document.getElementById("dateField").value;
+        window.fetch("http://localhost:8080/api/v1/cache?date=" + date)
+            .then(response => response.json())
+            .then(photos => {
+                console.log(photos);
+                if(Array.isArray(photos)) {
+                    let html = "Date [" + date + "] returned [" + photos.length + "] photos.<br/>";
+                    photos.forEach(photo => {
+                        html += "<img src='http://localhost:8080/api/v1/download?date=" + photo.date + "&fileName=" + photo.fileName + "' alt='" + photo.fileName + "'/><br/>";
+                    });
+                    document.getElementById("photoDiv").innerHTML = html;
+                } else {
+                    document.getElementById("photoDiv").innerHTML = photos.status + " " + photos.error + ": " + photos.message;
+                }
+            })
+    }
+</script>
+
+<div id="dateDiv">
+    <!--suppress HtmlFormInputWithoutLabel -->
+    <input id="dateField" type="text"/>
+    <button onclick="addDate()">Add Date</button>
+</div>
+<div id="photoDiv"></div>
 
 </body>
 </html>

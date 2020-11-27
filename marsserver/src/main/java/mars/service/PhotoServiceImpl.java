@@ -27,7 +27,7 @@ public class PhotoServiceImpl implements PhotoService {
         this.marsApiService = marsApiService;
     }
 
-    public List<Photo> cachePhotos(String earthDate) throws MarsApplicationException {
+    public List<CachedPhoto> cachePhotos(String earthDate) throws MarsApplicationException {
         File dateDirectory = new File(
                 Constants.PHOTO_CACHE + "/" + earthDate
         );
@@ -35,9 +35,9 @@ public class PhotoServiceImpl implements PhotoService {
             LOGGER.debug("Date [" + earthDate + "] is already cached.");
             String[] fileNames = dateDirectory.list();
             //noinspection ConstantConditions
-            List<Photo> result = new ArrayList<>(fileNames.length);
+            List<CachedPhoto> result = new ArrayList<>(fileNames.length);
             for(String fileName : fileNames) {
-                result.add(new Photo(earthDate, fileName));
+                result.add(new CachedPhoto(earthDate, fileName));
             }
             return result;
         }
@@ -46,20 +46,23 @@ public class PhotoServiceImpl implements PhotoService {
         }
         List<String> roverNames = roverService.requestRoverNames();
         List<Photo> photos = marsApiService.requestPhotos(roverNames, earthDate);
+        List<CachedPhoto> result = new ArrayList<>(photos.size());
         photos.parallelStream().forEach(photo -> {
+            String fileName = StringUtils.substringAfterLast(photo.getImgSrc(), "/");
             File photoFile = new File(
                     Constants.PHOTO_CACHE +
                             "/" + earthDate +
-                            "/" + StringUtils.substringAfterLast(photo.getImgSrc(), "/")
+                            "/" + fileName
             );
             //noinspection ResultOfMethodCallIgnored
             photoFile.getParentFile().mkdirs();
             marsApiService.downloadPhoto(photo.getImgSrc(), photoFile);
+            result.add(new CachedPhoto(earthDate, fileName));
         });
         if(LOGGER.isDebugEnabled()) {
             LOGGER.debug("Done downloading " + photos.size() + " photos for earthDate [" + earthDate + "].");
         }
-        return photos;
+        return result;
     }
 
     @Override

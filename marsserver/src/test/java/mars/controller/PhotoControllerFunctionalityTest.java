@@ -3,7 +3,7 @@ package mars.controller;
 import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import mars.MarsApplication;
-import mars.service.Photo;
+import mars.service.CachedPhoto;
 import org.apache.commons.io.IOUtils;
 import org.apache.http.HttpResponse;
 import org.apache.http.client.methods.HttpGet;
@@ -101,7 +101,7 @@ public class PhotoControllerFunctionalityTest {
         }
     }
 
-    private List<Photo> cachePhotos() throws IOException {
+    private List<CachedPhoto> cachePhotos() throws IOException {
         try(CloseableHttpClient client = HttpClients.createDefault()) {
             HttpGet request = new HttpGet("http://localhost:8080/api/v1/cache?date=" + DATE);
             HttpResponse response = client.execute(request);
@@ -109,7 +109,7 @@ public class PhotoControllerFunctionalityTest {
             //noinspection Convert2Diamond
             return objectMapper.readValue(
                     response.getEntity().getContent(),
-                    new TypeReference<List<Photo>>() {}
+                    new TypeReference<List<CachedPhoto>>() {}
             );
         }
     }

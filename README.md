@@ -38,7 +38,19 @@ Allowed date formats are:
 * yyyy-MM-dd.
 
 The application also includes a docker-integrated client that runs on port 80.
-At present it is only a Hello World.
+It allows the user to enter a date, which will cause the date to be cached
+(if it is not already) and will display the cached images for that date.
+Please note that the client is only a proof of concept and has not been implemented
+in a production-ready way.
 
 The client can be accessed via:
 * http://localhost
+
+Future work:
+* Re-implement client in React
+* Configure NodeJS to serve photos directly from the photo cache by using the photo_cache
+volume, rather then downloading them via the API
+* Improve client look, feel, and UX
+* Add integration tests for the UI itself.
+* Store image metadata in a database (in a separate docker container)
+and allow queries on more than date

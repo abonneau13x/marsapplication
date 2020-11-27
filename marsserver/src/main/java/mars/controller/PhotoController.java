@@ -3,7 +3,7 @@ package mars.controller;
 import mars.core.Constants;
 import mars.core.MarsApplicationException;
 import mars.core.Util;
-import mars.service.Photo;
+import mars.service.CachedPhoto;
 import mars.service.PhotoService;
 import org.springframework.core.io.Resource;
 import org.springframework.core.io.UrlResource;
@@ -30,10 +30,10 @@ public class PhotoController {
     }
 
     @RequestMapping("/cache")
-    public List<Photo> cache(@RequestParam("date") String rawDate) throws MarsApplicationException {
+    public List<CachedPhoto> cache(@RequestParam("date") String rawDate) throws MarsApplicationException {
         String earthDate = Util.parseEarthDate(rawDate);
         if(earthDate == null) {
-            return Collections.emptyList();
+            throw new MarsApplicationException("[" + rawDate + "] is not a valid date.");
         }
         return photoService.cachePhotos(earthDate);
     }
