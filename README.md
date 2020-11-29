@@ -47,9 +47,10 @@ The client can be accessed via:
 * http://localhost
 
 Future work:
+* Add JavaDoc
 * Re-implement client in React
 * Configure NodeJS to serve photos directly from the photo cache by using the photo_cache
-volume, rather then downloading them via the API
+volume, rather than having the client download them via the API
 * Improve client look, feel, and UX
 * Add integration tests for the UI itself.
 * Store image metadata in a database (in a separate docker container)
